@@ -122,13 +122,42 @@ Sp2=sqrt((PрSum1+∆Pp1)^2+(Qp1+∆Qp1)^2)
 Sp2_formula=strcat(["√" "(" string(PрSum1) "+" string(∆Pp1) ")" "^2" "+" "(" string(Qp1) "+" string(∆Qp1) ")" "^2" "=" string(Sp2)])
 disp("Полная итоговая мощность на стороне 110кВ (кВА):",Sp2_formula)
 
-//## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 110кВ
-S_TRANSFORMER=1000
+//## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 110кВ (ТМ-630/6/0,4)
+S_TRANSFORMER=630
+U_TRANSFORMER=6
 
 // $Kз.норм=Sp/(2*Sт)$
 Kз.норм=Sp2/(2*S_TRANSFORMER)
 Kз.норм_formula=strcat([string(Sp2) "/" "(" string(2) "*" string(S_TRANSFORMER) ")" "=" string(Kз.норм)])
 disp("Загрузка трансформатора в нормальном режиме работы:",Kз.норм_formula)
 
-//Imax=
+// $Kавар=Sp/Sт$
+Kавар=Sp2/S_TRANSFORMER
+Kавар_formula=strcat([string(Sp2) "/" string(S_TRANSFORMER) "=" string(Kавар)])
+disp("Загрузка трансформатора в аварийном режиме работы:",Kавар_formula)
+
+Imax=Sp2/(sqrt(3)*U_TRANSFORMER)
+Imax_formula=strcat([string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Imax)])
+disp("Максимальный ток линии Imax:",Imax_formula)
+
+Ipн=Sp2/(2*sqrt(3)*U_TRANSFORMER)
+Ipн_formula=strcat([string(Sp2) "/" "(" string(2) "*" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Ipн)])
+disp("Ipн:",Ipн_formula)
+
+Iавар=Sp2/(sqrt(3)*U_TRANSFORMER)
+Iавар_formula=strcat([string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Iавар)])
+disp("Iавар:",Iавар_formula)
+
+// Предельная экономическая плотнсть тока А/мм^2
+// 3.1 - кабель с резиновым и пластмассовой изоляцией с медными жилами (4500ч)
+J_ЭК=3.1
+
+Sэк=Iавар/J_ЭК
+Sэк_formula=strcat([string(Iавар) "/" string(J_ЭК) "=" string(Sэк)])
+disp("Экономическое сечение:",Sэк_formula)
+
+//## 2.3 Выбор числа, мощности и типа внутренних ТП 
+
+
+
 
