@@ -81,6 +81,7 @@ disp("Максимальная реактивная мощность (кВАр):
 
 // 0.33!!! - понять откуда берётся (оптимальное значение тангенса)
 tg𝛾h=0.33
+TG_FIH=0.33
 
 // $Qэ=tg𝛾h*PрSum1$
 Qэ=tg𝛾h*PрSum1
@@ -158,6 +159,94 @@ disp("Экономическое сечение:",Sэк_formula)
 
 //## 2.3 Выбор числа, мощности и типа внутренних ТП 
 
+// Объединение потребителей. Строго индивидуально!
+// В моём случае мощности небольшие, поэтому мелкие потребители разделены объединены в конечные 2 потребителя для ТП
+disp("Расчет объединенных потребителей")
+Ppsum1=Pр(1)+Pр(4)+Pр(6)+Pр(9)+Pр(11)+Pр(13)+Pр(14)
+Ppsum1_formula=strcat(["Pp1=" string(Pр(1)) "+" string(Pр(4)) "+" string(Pр(6)) "+" string(Pр(9)) "+" string(Pр(11)) "+" string(Pр(13)) "+" string(Pр(14)) "=" string(Ppsum1)])
+disp(Ppsum1_formula)
 
+Ppsum2=Pр(2)+Pр(3)+Pр(5)+Pр(7)+Pр(8)+Pр(10)+Pр(12)
+Ppsum2_formula=strcat(["Pp2=" string(Pр(2)) "+" string(Pр(3)) "+" string(Pр(5)) "+" string(Pр(7)) "+" string(Pр(8)) "+" string(Pр(10)) "+" string(Pр(12)) "=" string(Ppsum2)])
+disp(Ppsum2_formula)
+
+Qpsum1=Qр(1)+Qр(4)+Qр(6)+Qр(9)+Qр(11)+Qр(13)+Qр(14)
+Qpsum1_formula=strcat(["Qp1=" string(Qр(1)) "+" string(Qр(4)) "+" string(Qр(6)) "+" string(Qр(9)) "+" string(Qр(11)) "+" string(Qр(13)) "+" string(Qр(14)) "=" string(Qpsum1)])
+disp(Qpsum1_formula)
+
+Qpsum2=Qр(2)+Qр(3)+Qр(5)+Qр(7)+Qр(8)+Qр(10)+Qр(12)
+Qpsum2_formula=strcat(["Qp2=" string(Qр(2)) "+" string(Qр(3)) "+" string(Qр(5)) "+" string(Qр(7)) "+" string(Qр(8)) "+" string(Qр(10)) "+" string(Qр(12)) "=" string(Qpsum2)])
+disp(Qpsum2_formula)
+
+Spsum1=sqrt(Ppsum1^2+Qpsum1^2)
+Spsum1_formula=strcat(["Sp1=" "√" string(Ppsum1) "^2" "+" string(Qpsum1) "^2" "=" string(Spsum1)])
+disp(Spsum1_formula)
+
+Spsum2=sqrt(Ppsum2^2+Qpsum2^2)
+Spsum2_formula=strcat(["Sp2=" "√" string(Ppsum2) "^2" "+" string(Qpsum2) "^2" "=" string(Spsum2)])
+disp(Spsum2_formula)
+
+disp("Мощность требуемых компенсирующих устройств (кВАр)")
+tgfi=Qpsum1\Qpsum2
+tgfi_formula=strcat(["tgfi" "=" string(Qpsum1) "\" string(Qpsum2)])
+disp(tgfi_formula)
+
+Q1ку=Ppsum1*(tgfi-TG_FIH)
+Q1ку_formula=strcat(["Q1ку=" string(Ppsum1) "*" "(" string(tgfi) "-" string(TG_FIH) ")" "=" string(Q1ку)])
+disp(Q1ку_formula)
+
+Q2ку=Ppsum2*(tgfi-TG_FIH)
+Q2ку_formula=strcat(["Q2ку=" string(Ppsum2) "*" "(" string(tgfi) "-" string(TG_FIH) ")" "=" string(Q2ку)])
+disp(Q2ку_formula)
+
+// УКМ 58-0,4-300-50
+W_COMPENSATORY=300 // мощность компенсаторной установки
+W_COMPENSATORY_COUNT=2 // количество устанавливаемых КУ
+
+Q=Qpsum1-W_COMPENSATORY_COUNT*W_COMPENSATORY
+Q_formula=strcat(["Q=" string(Qpsum1) "-" string(W_COMPENSATORY_COUNT*W_COMPENSATORY) "=" string(Q)])
+disp("Мощность после установки КУ (кВАр):",Q_formula)
+
+Sp3=sqrt(Ppsum1^2+Q^2)
+Sp3_formula=strcat(["S`p1=" "√" string(Ppsum1) "^2" "+" string(Q) "^2" "=" string(Sp3)])
+disp("Полная мощность ТП-1",Sp3_formula)
+
+Sp4=sqrt(Ppsum2^2+Q^2)
+Sp4_formula=strcat(["S`p2=" "√" string(Ppsum2) "^2" "+" string(Q) "^2" "=" string(Sp4)])
+disp("Полная мощность ТП-2",Sp4_formula)
+
+// ТМГ-250/6/0,4
+S1_TRANSFORMER=250
+U1_TRANSFORMER=6
+TRANSFORMER_COUNT=2
+
+// $Kз.норм=Sp/(2*Sт)$
+Knormal=Sp3/(TRANSFORMER_COUNT*S1_TRANSFORMER)
+Knormal_formula=strcat([string(Sp3) "/" "(" string(TRANSFORMER_COUNT) "*" string(S1_TRANSFORMER) ")" "=" string(Knormal)])
+disp("Загрузка ТП-1 в нормальном режиме работы:",Knormal_formula)
+
+// $Kавар=Sp/Sном*(n-1)$
+Kcrash=Sp3/((TRANSFORMER_COUNT*S1_TRANSFORMER)*(TRANSFORMER_COUNT-1))
+Kcrash_formula=strcat([string(Sp3) "/" "((" string(TRANSFORMER_COUNT) "*" string(S1_TRANSFORMER) ")" "*" "(" string(TRANSFORMER_COUNT) "-1" ")" "=" string(Kcrash)])
+disp("Загрузка ТП-1 в аварийном режиме работы:",Kcrash_formula)
+
+// ТМГ-400/6/0,4
+S2_TRANSFORMER=400
+U2_TRANSFORMER=6
+TRANSFORMER_COUNT1=2
+
+Knormal1=Sp4/(TRANSFORMER_COUNT1*S2_TRANSFORMER)
+Knormal1_formula=strcat([string(Sp4) "/" "(" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "=" string(Knormal1)])
+disp("Загрузка ТП-2 в нормальном режиме работы:",Knormal_formula)
+
+// $Kавар=Sp/Sном*(n-1)$
+Kcrash1=Sp4/((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))
+Kcrash1_formula=strcat([string(Sp4) "/" "((" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "*" "(" string(TRANSFORMER_COUNT1) "-1" ")" "=" string(Kcrash1)])
+disp("Загрузка ТП-2 в аварийном режиме работы:",Kcrash1_formula)
+
+//## 2.4 Расчет и выбор линий электроснабжения
+// Константы трансформаторов
+TRANSFORMERS_CONSTS=[[S1_TRANSFORMER U1_TRANSFORMER TRANSFORMER_COUNT];[S2_TRANSFORMER U2_TRANSFORMER TRANSFORMER_COUNT1]]
+disp(string(length(TRANSFORMERS_CONSTS)))
 
 
