@@ -245,8 +245,102 @@ Kcrash1_formula=strcat([string(Sp4) "/" "((" string(TRANSFORMER_COUNT1) "*" stri
 disp("Загрузка ТП-2 в аварийном режиме работы:",Kcrash1_formula)
 
 //## 2.4 Расчет и выбор линий электроснабжения
-// Константы трансформаторов
-TRANSFORMERS_CONSTS=[[S1_TRANSFORMER U1_TRANSFORMER TRANSFORMER_COUNT];[S2_TRANSFORMER U2_TRANSFORMER TRANSFORMER_COUNT1]]
-disp(string(length(TRANSFORMERS_CONSTS)))
+TRANSFORMERS_CONSTS=[[S1_TRANSFORMER;U1_TRANSFORMER;TRANSFORMER_COUNT] [S2_TRANSFORMER;U2_TRANSFORMER;TRANSFORMER_COUNT1]]
+//disp(TRANSFORMERS_CONSTS,length(TRANSFORMERS_CONSTS))
+
+disp("Рабочие и аварийные токи ТП:")
+transformers_data_num=0
+transformer_data_num=1
+transfromer_num=1
+
+// ВВГ 3х50
+// ВВГ 3х95
+cabels_data_num=0
+cabel_data_num=1
+CABLES=[[1;0.9;1.25;187] [1;0.9;1.25;279]]
+while(transfromer_num<=2)
+    current_transformers_s=0
+    current_transformers_u=0
+    current_transformers_count=0
+
+    while(transformers_data_num<=length(TRANSFORMERS_CONSTS))
+        transformers_data_num=transformers_data_num+1
+        if transformer_data_num==1 then
+            current_transformers_s=TRANSFORMERS_CONSTS(transformers_data_num)
+        elseif transformer_data_num==2 then
+            current_transformers_u=TRANSFORMERS_CONSTS(transformers_data_num)
+        elseif transformer_data_num==3 then
+            current_transformers_count=TRANSFORMERS_CONSTS(transformers_data_num)
+            transformer_data_num=1
+            break
+        end;
+        transformer_data_num=transformer_data_num+1
+     end;
+
+    disp(strcat(["ТП-" string(transfromer_num)]))
+    Itn1=((current_transformers_count*current_transformers_s)*(current_transformers_count-1))/(2*sqrt(3)*current_transformers_u)
+    Itn1_formula=strcat(["Iн=" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" string(2) "*" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itn1)])
+    disp(Itn1_formula)
+
+    Itcrash1=((current_transformers_count*current_transformers_s)*(current_transformers_count-1))/(sqrt(3)*current_transformers_u)
+    Itcrash1_formula=strcat(["Iавар=" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itcrash1)])
+    disp(string(Itcrash1_formula))
+
+    Itcrashmax=(J_ЭК*((current_transformers_count*current_transformers_s)*(current_transformers_count-1)))/(sqrt(3)*current_transformers_u)
+    Itcrashmax_formula=strcat(["Iавар.макс=" string(J_ЭК) "*" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itcrashmax)])
+    disp(string(Itcrashmax_formula))
+
+    // Экономическое сечение кабеля
+    Seconom=Itcrashmax/J_ЭК
+    Seconom_formula=strcat(["Sэк=" string(Itcrashmax) "/" string(J_ЭК) "=" string(Seconom)])
+    disp(string(Seconom_formula))
+
+    current_cabel_k1=0
+    current_cabel_k2=0
+    current_cabel_k3=0
+    current_cabel_i=0
+    while(cabels_data_num<=length(CABLES))
+        cabels_data_num=cabels_data_num+1
+        if cabel_data_num==1 then
+            current_cabel_k1=CABLES(cabels_data_num)
+        elseif cabel_data_num==2 then
+            current_cabel_k2=CABLES(cabels_data_num)
+        elseif cabel_data_num==3 then
+            current_cabel_k3=CABLES(cabels_data_num)
+        elseif cabel_data_num==4 then
+            current_cabel_i=CABLES(cabels_data_num)
+            cabel_data_num=1
+            break
+        end;
+        cabel_data_num=cabel_data_num+1
+     end;
+
+    Iadd=current_cabel_k1*current_cabel_k2*current_cabel_k3*current_cabel_i
+    disp(strcat(["Iд.доп=" string(current_cabel_k1) "*" string(current_cabel_k2) "*" string(current_cabel_k3) "*" string(current_cabel_i) "=" string(Iadd)]))
+
+    transfromer_num=transfromer_num+1
+end;
+
+
+
+//Itn1=((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(2*sqrt(3)*U1_TRANSFORMER)
+//Itn1_formula=strcat(["Iн=" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" string(2) "*" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itn1)])
+//disp("Вычисление токов рабочего и аварийного режимов:",string(Itn1_formula))
+
+//Itcrash1=((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(sqrt(3)*U1_TRANSFORMER)
+//Itcrash1_formula=strcat(["Iавар=" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itcrash1)])
+//disp(string(Itcrash1_formula))
+
+//Itcrashmax=(J_ЭК*(TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(sqrt(3)*U1_TRANSFORMER)
+//Itcrashmax_formula=strcat(["Iавар.макс=" string(J_ЭК) "*" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itcrashmax)])
+//disp(string(Itcrashmax_formula))
+
+// Экономическое сечение кабеля
+//Seconom=Itcrashmax/J_ЭК
+//Seconom_formula=strcat(["Sэк=" string(Itcrashmax) "/" string(J_ЭК) "=" string(Seconom)])
+//disp("Экономическое сечение кабеля:",string(Seconom_formula))
+
+
+
 
 
