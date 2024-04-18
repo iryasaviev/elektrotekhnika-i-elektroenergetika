@@ -321,24 +321,58 @@ while(transfromer_num<=2)
     transfromer_num=transfromer_num+1
 end;
 
+//## 2.5 Расчет электрических нагрузок в модернизирумоего отдела
+Ploadmax=4.2
+Ploadmin=0.1
+m=Ploadmax/Ploadmin
+m_formula=strcat(["m=" string(Ploadmax) "/" string(Ploadmin)])
+disp("Показатель силовой сборки в группе электроприемников:",m_formula)
 
+Pmodern_device_nums=[1.7 4.2 2 0.35 0.19 1 0.1]
+Kmodern_device_nums_usage=[0.5 0.5 0.5 0.5 0.5 0.5 0.5]
+Cosφ_modern_devices=[0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.98 0.95 0.75 0.65 0.65]
 
-//Itn1=((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(2*sqrt(3)*U1_TRANSFORMER)
-//Itn1_formula=strcat(["Iн=" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" string(2) "*" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itn1)])
-//disp("Вычисление токов рабочего и аварийного режимов:",string(Itn1_formula))
+disp("Активная компонента мощности:")
+modern_device_num=1
+Paverages=[]
+while(modern_device_num<=length(Pmodern_device_nums))
+    // Активная мощность компонента
+    Paverage=Pmodern_device_nums(modern_device_num)*Kmodern_device_nums_usage(modern_device_num)
+    Paverage_formula=strcat(["Pсм" string(modern_device_num) "=" string(Pmodern_device_nums(modern_device_num)) "*" string(Kmodern_device_nums_usage(modern_device_num)) "=" string(Paverage)])
+    disp(Paverage_formula)
+    Paverages(modern_device_num)=Paverage
 
-//Itcrash1=((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(sqrt(3)*U1_TRANSFORMER)
-//Itcrash1_formula=strcat(["Iавар=" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itcrash1)])
-//disp(string(Itcrash1_formula))
+    modern_device_num=modern_device_num+1
+end;
 
-//Itcrashmax=(J_ЭК*(TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))/(sqrt(3)*U1_TRANSFORMER)
-//Itcrashmax_formula=strcat(["Iавар.макс=" string(J_ЭК) "*" string(((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))) "/" "√" string(3) "*" string(U1_TRANSFORMER) "=" string(Itcrashmax)])
-//disp(string(Itcrashmax_formula))
+disp("Реактивная компонента мощности:")
+Tgφ_modern_devices=[]
+Qaverages=[]
+modern_device_num=1
+while(modern_device_num<=length(Paverages))
+    // Реактивная компонента мощности
+    Tgφ_modern_devices(modern_device_num)=sqrt(1-Cosφ_modern_devices(modern_device_num)^2)/Cosφ_modern_devices(modern_device_num)
+    Qaverage=Paverages(modern_device_num)*Tgφ_modern_devices(modern_device_num)
+    Qaverage_formula=strcat(["Qсм" string(modern_device_num) "=" string(Paverages(modern_device_num)) "*" string(Tgφ_modern_devices(modern_device_num)) "=" string(Qaverage)])
+    disp(Qaverage_formula)
+    Qaverages(modern_device_num)=Qaverage
 
-// Экономическое сечение кабеля
-//Seconom=Itcrashmax/J_ЭК
-//Seconom_formula=strcat(["Sэк=" string(Itcrashmax) "/" string(J_ЭК) "=" string(Seconom)])
-//disp("Экономическое сечение кабеля:",string(Seconom_formula))
+    modern_device_num=modern_device_num+1
+end;
+
+disp("Полная мощность за смену для каждого потребителя:")
+Tgφ_modern_devices=[]
+Saverages=[]
+modern_device_num=1
+while(modern_device_num<=length(Paverages))
+    // Полная мощность
+    Saverage=sqrt(Paverages(modern_device_num)^2+Qaverages(modern_device_num)^2)
+    Saverage_formula=strcat(["Sсм" string(modern_device_num) "=" "√" string(Paverages(modern_device_num)) "^2" "+" "√" string(Qaverages(modern_device_num)) "^2" "=" string(Saverage)])
+    disp(Saverage_formula)
+    Saverages(modern_device_num)=Saverage
+
+    modern_device_num=modern_device_num+1
+end;
 
 
 
