@@ -429,7 +429,30 @@ Im=Sm/(sqrt(3)*0.38)
 Im_formula=strcat(["Im=" string(Sm) "/" "(" "√" string(3) "*" string(0.38) ")" "=" string(Im)])
 disp("Максимальная нагрузка и максимальный ток на распределительное устройство:",Pm1_formula,Qm2_formula,Sm_formula,Im_formula)
 
+//## 2.6 Расчёт дизель-генератора для отделения
+//АД-40С-Т400-2РКМ7
+U_GENERATOR=0.4
+S_GENERATOR=40
 
+Pgenerator=S_GENERATOR/0.95
+Pgenerator_formula=strcat(["Pдг=" string(S_GENERATOR) "/" string(0.95) "=" string(Pgenerator)])
+
+//## 2.7 Расчёт освещения модернизируемого отделения
+ROOM_LENGTH=13.5
+ROOM_WIDTH=6
+ROOM_HEIGHT=3
+
+LAMP_HEIGHT=0.1
+WORK_SURFACE_HEIGHT=1.2
+
+h_s=ROOM_HEIGHT-(LAMP_HEIGHT-WORK_SURFACE_HEIGHT)
+h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "-" string(WORK_SURFACE_HEIGHT) "=" string(h_s)])
+disp("Высота подвеса светильников:",h_s_formula)
+
+i_r=(ROOM_LENGTH*ROOM_WIDTH)/(h_s*(ROOM_LENGTH+ROOM_WIDTH))
+i_r_formula=strcat(["(" string(ROOM_LENGTH) "*" string(ROOM_WIDTH) ")" "/" "(" string(h_s) "*" "(" string(ROOM_LENGTH) "+" string(ROOM_WIDTH) ")" "=" string(i_r)])
+disp("Индекс помещения:",i_r_formula)
+//0.25
 
 
 
