@@ -374,6 +374,65 @@ while(modern_device_num<=length(Paverages))
     modern_device_num=modern_device_num+1
 end;
 
+// Формирование данных для формулы эффективного числа электроприемников
+modern_device_num=1
+Pmodern_device_nums_formula_els=[]
+Pmodern_device_nums_squared=[]
+Pmodern_device_nums_squared_formula_els=[]
+while(modern_device_num<=length(Pmodern_device_nums))
+    Pmodern_device_nums_squared(modern_device_num)=Pmodern_device_nums(modern_device_num)^2
+    if modern_device_num==1 then
+        Pmodern_device_nums_formula_els(modern_device_num)=strcat([string(Pmodern_device_nums(modern_device_num))])
+        Pmodern_device_nums_squared_formula_els(modern_device_num)=strcat([string(Pmodern_device_nums(modern_device_num)) "^2"])
+    else
+        Pmodern_device_nums_formula_els(modern_device_num)=strcat(["+" string(Pmodern_device_nums(modern_device_num))])
+        Pmodern_device_nums_squared_formula_els(modern_device_num)=strcat(["+" string(Pmodern_device_nums(modern_device_num)) "^2"])
+    end;
+
+    modern_device_num=modern_device_num+1
+end;
+
+n_effect=sum(Pmodern_device_nums)^2/sum(Pmodern_device_nums_squared)
+n_effect_formula=strcat(["nэ=" "(" strcat(Pmodern_device_nums_formula_els) ")" "^2" "/" strcat(Pmodern_device_nums_squared_formula_els) "=" string(n_effect)])
+disp("Значение эффективного числа приёмников:",n_effect_formula)
+
+// Значения коэффициента максимума активной Kм и реактивной Kм мощности
+disp("Значения коэффициента максимума активной Kм и реактивной Kм мощности:")
+Kaverage=sum(Paverages)/sum(Pmodern_device_nums)
+Kaverage_formula=strcat(["Kн.ср=:" string(sum(Paverages)) "/" string(sum(Pmodern_device_nums)) "=" string(Kaverage)])
+disp(Kaverage_formula)
+
+//Kм’ принимают равным 1,1 при nэ ≤10, и 1,0 при nэ > 10
+Km=1+(1.5/sqrt(n_effect))*sqrt((1-Kaverage)/Kaverage)
+Km_formula=strcat(["Km=" string(1) "+" "(" string(1.5) "/" "√" string(n_effect) ")" "*" "√" "(" string(1) "-" string(Kaverage) ")" "/" string(Kaverage) "=" string(Km)])
+disp(Km_formula)
+
+// Суммарные значения коэффициента мощности
+Cosφ_devices_sum=sum(Paverages)/sum(Saverages)
+Cosφ_devices_sum_formula=strcat(["cosφ=" string(sum(Paverages)) "/" string(sum(Saverages)) "=" string(Cosφ_devices_sum)])
+
+tgφ_devices_sum=sum(Qaverages)/sum(Paverages)
+tgφ_devices_sum_formula=strcat(["tgφ=" string(sum(Qaverages)) "/" string(sum(Paverages)) "=" string(tgφ_devices_sum)])
+disp("Суммарные значения коэффициента мощности:",Cosφ_devices_sum_formula,tgφ_devices_sum_formula)
+
+// Максимальная нагрузка и максимальный ток на распределительное устройство
+Pm1=Km*sum(Paverages)
+Pm1_formula=strcat(["Pm=" string(Km) "*" string(sum(Paverages)) "=" string(Pm1)])
+
+Qm2=1.1*sum(Qaverages)
+Qm2_formula=strcat(["Qm=" string(1.1) "*" string(sum(Qaverages)) "=" string(Qm2)])
+
+Sm=sqrt(Pm1^2+Qm2^2)
+Sm_formula=strcat(["Sm=" "√" string(Pm1) "^2" "+" string(Qm2) "^2" "=" string(Sm)])
+
+Im=Sm/(sqrt(3)*0.38)
+Im_formula=strcat(["Im=" string(Sm) "/" "(" "√" string(3) "*" string(0.38) ")" "=" string(Im)])
+disp("Максимальная нагрузка и максимальный ток на распределительное устройство:",Pm1_formula,Qm2_formula,Sm_formula,Im_formula)
+
+
+
+
+
 
 
 
