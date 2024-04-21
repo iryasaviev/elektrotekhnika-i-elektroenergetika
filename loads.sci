@@ -440,19 +440,43 @@ Pgenerator_formula=strcat(["Pдг=" string(S_GENERATOR) "/" string(0.95) "=" str
 //## 2.7 Расчёт освещения модернизируемого отделения
 ROOM_LENGTH=13.5
 ROOM_WIDTH=6
-ROOM_HEIGHT=3
+ROOM_HEIGHT=2.5
 
-LAMP_HEIGHT=0.1
+LAMP_HEIGHT=0.2
 WORK_SURFACE_HEIGHT=1.2
 
 h_s=ROOM_HEIGHT-(LAMP_HEIGHT-WORK_SURFACE_HEIGHT)
-h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "-" string(WORK_SURFACE_HEIGHT) "=" string(h_s)])
+h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "-" string(WORK_SURFACE_HEIGHT) ")" "=" string(h_s)])
 disp("Высота подвеса светильников:",h_s_formula)
 
 i_r=(ROOM_LENGTH*ROOM_WIDTH)/(h_s*(ROOM_LENGTH+ROOM_WIDTH))
 i_r_formula=strcat(["(" string(ROOM_LENGTH) "*" string(ROOM_WIDTH) ")" "/" "(" string(h_s) "*" "(" string(ROOM_LENGTH) "+" string(ROOM_WIDTH) ")" "=" string(i_r)])
 disp("Индекс помещения:",i_r_formula)
-//0.25
+
+//0.33 - коэф-ент использования (выбирается по таблице)
+LUM_FLUX_UTILIZATION_FACTOR=0.4
+
+λэ=1
+L_distance_in_row=h_s*λэ
+L_distance_in_row_formula=strcat(["L=" string(h_s) "*" string(λэ) "=" string(L_distance_in_row)])
+disp("Расстояние между светильниками в ряду (м):",L_distance_in_row_formula)
+
+Nb=ROOM_WIDTH/L_distance_in_row
+Nb_formula=strcat(["Nb=" string(ROOM_WIDTH) "/" string(L_distance_in_row) "=" string(Nb)])
+disp("Число рядов светильников в помещении:",Nb_formula)
+
+Na=ROOM_LENGTH/L_distance_in_row
+Na_formula=strcat(["Na=" string(ROOM_LENGTH) "/" string(L_distance_in_row) "=" string(Na)])
+disp("Число светильников в ряду:",Na_formula)
+
+Nall=Na*Nb
+Nall_formula=strcat(["Nall=" string(Na) "*" string(Nb) "=" string(Nall)])
+disp("Общее число светильников:",Nall_formula)
+
+
+
+
+
 
 
 
