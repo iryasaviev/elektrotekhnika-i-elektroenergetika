@@ -41,7 +41,7 @@ while (prog_x<=length(Kс))
     prog_x=prog_x+1;
 end;
 
-//format("v", 10)
+format("v", 5)
 
 disp(["№" "tgφ" "Pр" "Qр" "Pро" "Sр" "Sрио"],[nums Tgφ Pр Qр Pро Sр Sрио])
 disp([00 00 PрSum QрSum PроSum SрSum SриоSum])
@@ -121,11 +121,11 @@ disp(∆Qp1_formula)
 
 Sp2=sqrt((PрSum1+∆Pp1)^2+(Qp1+∆Qp1)^2)
 Sp2_formula=strcat(["√" "(" string(PрSum1) "+" string(∆Pp1) ")" "^2" "+" "(" string(Qp1) "+" string(∆Qp1) ")" "^2" "=" string(Sp2)])
-disp("Полная итоговая мощность на стороне 110кВ (кВА):",Sp2_formula)
+disp("Полная итоговая мощность на стороне 35кВ (кВА):",Sp2_formula)
 
-//## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 110кВ (ТМ-630/6/0,4)
+//## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 35кВ (ТМ-630/35/6)
 S_TRANSFORMER=630
-U_TRANSFORMER=6
+U_TRANSFORMER=35
 
 // $Kз.норм=Sp/(2*Sт)$
 Kз.норм=Sp2/(2*S_TRANSFORMER)
