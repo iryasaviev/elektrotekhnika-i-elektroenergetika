@@ -49,7 +49,7 @@ disp([00 00 PрSum QрSum PроSum SрSum SриоSum])
 // $S=\sqrt((PрSum+PроSum)^2+QрSum^2)$
 S=sqrt((PрSum+PроSum)^2+QрSum^2)
 S_formula=strcat(["√(" string(PрSum) "+" string(PроSum) ")^2+" string(QрSum) "^2=" string(S)])
-disp("Первоначальные потери на стороне 10/0,4 кВА:",S_formula)
+disp("Первоначальные потери на стороне 6/0,4 кВА:",S_formula)
 
 // $Pm=0.02*S$
 Pm=0.02*S
@@ -145,13 +145,16 @@ Ipн=Sp2/(2*sqrt(3)*U_TRANSFORMER)
 Ipн_formula=strcat([string(Sp2) "/" "(" string(2) "*" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Ipн)])
 disp("Ipн:",Ipн_formula)
 
-Iавар=Sp2/(sqrt(3)*U_TRANSFORMER)
-Iавар_formula=strcat([string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Iавар)])
+Iавар=1.4*Sp2/(sqrt(3)*U_TRANSFORMER)
+Iавар_formula=strcat([string(1.4) "*" string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Iавар)])
 disp("Iавар:",Iавар_formula)
 
 // Предельная экономическая плотнсть тока А/мм^2
 // 3.1 - кабель с резиновым и пластмассовой изоляцией с медными жилами (4500ч)
-J_ЭК=3.1
+// 1.7 -  кабель с резиновым и пластмассовой изоляцией с алюминевыми жилами
+J_ЭК=1.7
+
+//АПвВ 1х50-35
 
 Sэк=Iавар/J_ЭК
 Sэк_formula=strcat([string(Iавар) "/" string(J_ЭК) "=" string(Sэк)])
