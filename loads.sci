@@ -123,7 +123,10 @@ Sp2=sqrt((PрSum1+∆Pp1)^2+(Qp1+∆Qp1)^2)
 Sp2_formula=strcat(["√" "(" string(PрSum1) "+" string(∆Pp1) ")" "^2" "+" "(" string(Qp1) "+" string(∆Qp1) ")" "^2" "=" string(Sp2)])
 disp("Полная итоговая мощность на стороне 35кВ (кВА):",Sp2_formula)
 
+// ---------------------------------------------------
 //## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 35кВ (ТМ-630/35/6)
+// ---------------------------------------------------
+
 S_TRANSFORMER=630
 U_TRANSFORMER=35
 
@@ -153,6 +156,7 @@ disp("Iавар:",Iавар_formula)
 // 3.1 - кабель с резиновым и пластмассовой изоляцией с медными жилами (4500ч)
 // 1.7 -  кабель с резиновым и пластмассовой изоляцией с алюминевыми жилами
 J_ЭК=1.7
+J_ЭК1=3.1
 
 //АПвВ 1х50-35
 
@@ -160,7 +164,9 @@ Sэк=Iавар/J_ЭК
 Sэк_formula=strcat([string(Iавар) "/" string(J_ЭК) "=" string(Sэк)])
 disp("Экономическое сечение:",Sэк_formula)
 
+// ---------------------------------------------------
 //## 2.3 Выбор числа, мощности и типа внутренних ТП 
+// ---------------------------------------------------
 
 // Объединение потребителей. Строго индивидуально!
 // В моём случае мощности небольшие, поэтому мелкие потребители разделены объединены в конечные 2 потребителя для ТП
@@ -191,7 +197,7 @@ disp(Spsum2_formula)
 
 disp("Мощность требуемых компенсирующих устройств (кВАр)")
 tgfi=Qpsum1\Qpsum2
-tgfi_formula=strcat(["tgfi" "=" string(Qpsum1) "\" string(Qpsum2)])
+tgfi_formula=strcat(["tgfi" "=" string(Qpsum1) "\" string(Qpsum2) "=" string(tgfi)])
 disp(tgfi_formula)
 
 Q1ку=Ppsum1*(tgfi-TG_FIH)
@@ -202,8 +208,8 @@ Q2ку=Ppsum2*(tgfi-TG_FIH)
 Q2ку_formula=strcat(["Q2ку=" string(Ppsum2) "*" "(" string(tgfi) "-" string(TG_FIH) ")" "=" string(Q2ку)])
 disp(Q2ку_formula)
 
-// УКМ 58-0,4-300-50
-W_COMPENSATORY=300 // мощность компенсаторной установки
+// УКМ58 (КРМ)-0,4-25-5 У3
+W_COMPENSATORY=25 // мощность компенсаторной установки
 W_COMPENSATORY_COUNT=2 // количество устанавливаемых КУ
 
 Q=Qpsum1-W_COMPENSATORY_COUNT*W_COMPENSATORY
@@ -218,8 +224,8 @@ Sp4=sqrt(Ppsum2^2+Q^2)
 Sp4_formula=strcat(["S`p2=" "√" string(Ppsum2) "^2" "+" string(Q) "^2" "=" string(Sp4)])
 disp("Полная мощность ТП-2",Sp4_formula)
 
-// ТМГ-250/6/0,4
-S1_TRANSFORMER=250
+// ТМГ-63/6/0,4
+S1_TRANSFORMER=63
 U1_TRANSFORMER=6
 TRANSFORMER_COUNT=2
 
@@ -233,21 +239,24 @@ Kcrash=Sp3/((TRANSFORMER_COUNT*S1_TRANSFORMER)*(TRANSFORMER_COUNT-1))
 Kcrash_formula=strcat([string(Sp3) "/" "((" string(TRANSFORMER_COUNT) "*" string(S1_TRANSFORMER) ")" "*" "(" string(TRANSFORMER_COUNT) "-1" ")" "=" string(Kcrash)])
 disp("Загрузка ТП-1 в аварийном режиме работы:",Kcrash_formula)
 
-// ТМГ-400/6/0,4
-S2_TRANSFORMER=400
+// ТМГ-160/6/0,4
+S2_TRANSFORMER=160
 U2_TRANSFORMER=6
 TRANSFORMER_COUNT1=2
 
 Knormal1=Sp4/(TRANSFORMER_COUNT1*S2_TRANSFORMER)
 Knormal1_formula=strcat([string(Sp4) "/" "(" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "=" string(Knormal1)])
-disp("Загрузка ТП-2 в нормальном режиме работы:",Knormal_formula)
+disp("Загрузка ТП-2 в нормальном режиме работы:",Knormal1_formula)
 
 // $Kавар=Sp/Sном*(n-1)$
 Kcrash1=Sp4/((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))
 Kcrash1_formula=strcat([string(Sp4) "/" "((" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "*" "(" string(TRANSFORMER_COUNT1) "-1" ")" "=" string(Kcrash1)])
 disp("Загрузка ТП-2 в аварийном режиме работы:",Kcrash1_formula)
 
+// ---------------------------------------------------
 //## 2.4 Расчет и выбор линий электроснабжения
+// ---------------------------------------------------
+
 TRANSFORMERS_CONSTS=[[S1_TRANSFORMER;U1_TRANSFORMER;TRANSFORMER_COUNT] [S2_TRANSFORMER;U2_TRANSFORMER;TRANSFORMER_COUNT1]]
 //disp(TRANSFORMERS_CONSTS,length(TRANSFORMERS_CONSTS))
 
@@ -289,13 +298,13 @@ while(transfromer_num<=2)
     Itcrash1_formula=strcat(["Iавар=" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itcrash1)])
     disp(string(Itcrash1_formula))
 
-    Itcrashmax=(J_ЭК*((current_transformers_count*current_transformers_s)*(current_transformers_count-1)))/(sqrt(3)*current_transformers_u)
-    Itcrashmax_formula=strcat(["Iавар.макс=" string(J_ЭК) "*" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itcrashmax)])
+    Itcrashmax=(J_ЭК1*((current_transformers_count*current_transformers_s)*(current_transformers_count-1)))/(sqrt(3)*current_transformers_u)
+    Itcrashmax_formula=strcat(["Iавар.макс=" string(J_ЭК1) "*" string(((current_transformers_count*current_transformers_s)*(current_transformers_count-1))) "/" "(" "√" string(3) "*" string(current_transformers_u) ")" "=" string(Itcrashmax)])
     disp(string(Itcrashmax_formula))
 
     // Экономическое сечение кабеля
-    Seconom=Itcrashmax/J_ЭК
-    Seconom_formula=strcat(["Sэк=" string(Itcrashmax) "/" string(J_ЭК) "=" string(Seconom)])
+    Seconom=Itcrashmax/J_ЭК1
+    Seconom_formula=strcat(["Sэк=" string(Itcrashmax) "/" string(J_ЭК1) "=" string(Seconom)])
     disp(string(Seconom_formula))
 
     current_cabel_k1=0
@@ -324,16 +333,20 @@ while(transfromer_num<=2)
     transfromer_num=transfromer_num+1
 end;
 
-//## 2.5 Расчет электрических нагрузок в модернизирумоего отдела
-Ploadmax=4.2
-Ploadmin=0.1
+// ---------------------------------------------------
+//## 2.5 Расчет электрических нагрузок модернизирумоего отдела
+// ---------------------------------------------------
+
+Ploadmax=12
+Ploadmin=0.5
 m=Ploadmax/Ploadmin
-m_formula=strcat(["m=" string(Ploadmax) "/" string(Ploadmin)])
+m_formula=strcat(["m=" string(Ploadmax) "/" string(Ploadmin) "=" string(m)])
 disp("Показатель силовой сборки в группе электроприемников:",m_formula)
 
-Pmodern_device_nums=[1.7 4.2 2 0.35 0.19 1 0.1]
-Kmodern_device_nums_usage=[0.5 0.5 0.5 0.5 0.5 0.5 0.5]
-Cosφ_modern_devices=[0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.98 0.95 0.75 0.65 0.65]
+//Pmodern_device_nums=[1.7 4.2 2 0.35 0.19 1 0.1]
+Pmodern_device_nums=[3.4 4.2 12 4 0.5]
+Kmodern_device_nums_usage=[0.5 0.5 0.5 0.5 0.5]
+Cosφ_modern_devices=[0.95 0.75 0.95 0.8 0.95]
 
 disp("Активная компонента мощности:")
 modern_device_num=1
@@ -402,7 +415,7 @@ disp("Значение эффективного числа приёмников:
 // Значения коэффициента максимума активной Kм и реактивной Kм мощности
 disp("Значения коэффициента максимума активной Kм и реактивной Kм мощности:")
 Kaverage=sum(Paverages)/sum(Pmodern_device_nums)
-Kaverage_formula=strcat(["Kн.ср=:" string(sum(Paverages)) "/" string(sum(Pmodern_device_nums)) "=" string(Kaverage)])
+Kaverage_formula=strcat(["Kн.ср=" string(sum(Paverages)) "/" string(sum(Pmodern_device_nums)) "=" string(Kaverage)])
 disp(Kaverage_formula)
 
 //Kм’ принимают равным 1,1 при nэ ≤10, и 1,0 при nэ > 10
@@ -432,7 +445,10 @@ Im=Sm/(sqrt(3)*0.38)
 Im_formula=strcat(["Im=" string(Sm) "/" "(" "√" string(3) "*" string(0.38) ")" "=" string(Im)])
 disp("Максимальная нагрузка и максимальный ток на распределительное устройство:",Pm1_formula,Qm2_formula,Sm_formula,Im_formula)
 
+// ---------------------------------------------------
 //## 2.6 Расчёт дизель-генератора для отделения
+// ---------------------------------------------------
+
 //АД-40С-Т400-2РКМ7
 U_GENERATOR=0.4
 S_GENERATOR=40
@@ -440,45 +456,69 @@ S_GENERATOR=40
 Pgenerator=S_GENERATOR/0.95
 Pgenerator_formula=strcat(["Pдг=" string(S_GENERATOR) "/" string(0.95) "=" string(Pgenerator)])
 
+// ---------------------------------------------------
 //## 2.7 Расчёт освещения модернизируемого отделения
+// ---------------------------------------------------
+
 ROOM_LENGTH=13.5
 ROOM_WIDTH=6
 ROOM_HEIGHT=2.5
+ROOM_S=ROOM_LENGTH*ROOM_WIDTH
 
 LAMP_HEIGHT=0.2
-WORK_SURFACE_HEIGHT=1.2
+WORK_SURFACE_HEIGHT=0.9
 
-h_s=ROOM_HEIGHT-(LAMP_HEIGHT-WORK_SURFACE_HEIGHT)
-h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "-" string(WORK_SURFACE_HEIGHT) ")" "=" string(h_s)])
+h_s=ROOM_HEIGHT-(LAMP_HEIGHT+WORK_SURFACE_HEIGHT)
+h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "+" string(WORK_SURFACE_HEIGHT) ")" "=" string(h_s)])
 disp("Высота подвеса светильников:",h_s_formula)
 
 i_r=(ROOM_LENGTH*ROOM_WIDTH)/(h_s*(ROOM_LENGTH+ROOM_WIDTH))
 i_r_formula=strcat(["(" string(ROOM_LENGTH) "*" string(ROOM_WIDTH) ")" "/" "(" string(h_s) "*" "(" string(ROOM_LENGTH) "+" string(ROOM_WIDTH) ")" "=" string(i_r)])
 disp("Индекс помещения:",i_r_formula)
 
-//0.33 - коэф-ент использования (выбирается по таблице)
-LUM_FLUX_UTILIZATION_FACTOR=0.4
+//0.75 - коэф-ент использования (выбирается по таблице)
+LUM_FLUX_UTILIZATION_FACTOR=0.75
+LUM_FLUX_MIN=1.15
+E_WORK=400
+K_STOCK=1
+F_LUM=3200
+P_LUM_NOM=32
+λэ=1.15
 
-λэ=1
-L_distance_in_row=h_s*λэ
-L_distance_in_row_formula=strcat(["L=" string(h_s) "*" string(λэ) "=" string(L_distance_in_row)])
-disp("Расстояние между светильниками в ряду (м):",L_distance_in_row_formula)
 
-Nb=ROOM_WIDTH/L_distance_in_row
-Nb_formula=strcat(["Nb=" string(ROOM_WIDTH) "/" string(L_distance_in_row) "=" string(Nb)])
-disp("Число рядов светильников в помещении:",Nb_formula)
+//L_distance_in_row=h_s*λэ
+//L_distance_in_row_formula=strcat(["L=" string(h_s) "*" string(λэ) "=" string(L_distance_in_row)])
+//disp("Расстояние между светильниками в ряду (м):",L_distance_in_row_formula)
+//
+//Nb=ROOM_WIDTH/L_distance_in_row
+//Nb_formula=strcat(["Nb=" string(ROOM_WIDTH) "/" string(L_distance_in_row) "=" string(Nb)])
+//disp("Число рядов светильников в помещении:",Nb_formula)
+//
+//Na=ROOM_LENGTH/L_distance_in_row
+//Na_formula=strcat(["Na=" string(ROOM_LENGTH) "/" string(L_distance_in_row) "=" string(Na)])
+//disp("Число светильников в ряду:",Na_formula)
+//
+//Nall=Na*Nb
+//Nall_formula=strcat(["Nall=" string(Na) "*" string(Nb) "=" string(Nall)])
+//disp("Общее число светильников:",Nall_formula)
 
-Na=ROOM_LENGTH/L_distance_in_row
-Na_formula=strcat(["Na=" string(ROOM_LENGTH) "/" string(L_distance_in_row) "=" string(Na)])
-disp("Число светильников в ряду:",Na_formula)
-
-Nall=Na*Nb
-Nall_formula=strcat(["Nall=" string(Na) "*" string(Nb) "=" string(Nall)])
+Nall=(ROOM_S*E_WORK*K_STOCK*LUM_FLUX_MIN)/(LUM_FLUX_UTILIZATION_FACTOR*F_LUM)
+Nall_formula=strcat(["Nall=" "(" string(ROOM_S) "*" string(E_WORK) "*" string(K_STOCK) "*" string(LUM_FLUX_MIN) ")" "/" "(" string(LUM_FLUX_UTILIZATION_FACTOR) "*" string(F_LUM) ")" "=" string(Nall)])
 disp("Общее число светильников:",Nall_formula)
 
+//E_ав составляет 15% от E_раб
+E_CRASH=E_WORK*(15/100)
 
+Ncrash=(ROOM_S*E_CRASH*K_STOCK*LUM_FLUX_MIN)/(LUM_FLUX_UTILIZATION_FACTOR*F_LUM)
+Ncrash_formula=strcat(["Nall=" "(" string(ROOM_S) "*" string(E_CRASH) "*" string(K_STOCK) "*" string(LUM_FLUX_MIN) ")" "/" "(" string(LUM_FLUX_UTILIZATION_FACTOR) "*" string(F_LUM) ")" "=" string(Ncrash)])
+disp("Аварийное число светильников:",Ncrash_formula)
 
+K_LUM1=1.1
+K_LUM2=0.95
 
+P_lum=K_LUM1*K_LUM2*P_LUM_NOM
+P_lum_formula=strcat(["Pp=" string(K_LUM1) "*" string(K_LUM2) "*" string(P_LUM_NOM) "=" string(P_lum)])
+disp("Расчётная мощность одного светильника, Вт:",P_lum_formula)
 
 
 
