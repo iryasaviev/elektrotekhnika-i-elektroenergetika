@@ -41,7 +41,7 @@ while (prog_x<=length(Kс))
     prog_x=prog_x+1;
 end;
 
-format("v", 5)
+format("v", 6)
 
 disp(["№" "tgφ" "Pр" "Qр" "Pро" "Sр" "Sрио"],[nums Tgφ Pр Qр Pро Sр Sрио])
 disp([00 00 PрSum QрSum PроSum SрSum SриоSum])
@@ -126,6 +126,7 @@ disp("Полная итоговая мощность на стороне 35кВ 
 // ---------------------------------------------------
 //## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 35кВ (ТМ-630/35/6)
 // ---------------------------------------------------
+disp("2.2 ---------------------------------------------------")
 
 S_TRANSFORMER=630
 U_TRANSFORMER=35
@@ -167,6 +168,7 @@ disp("Экономическое сечение:",Sэк_formula)
 // ---------------------------------------------------
 //## 2.3 Выбор числа, мощности и типа внутренних ТП 
 // ---------------------------------------------------
+disp("2.3 ---------------------------------------------------")
 
 // Объединение потребителей. Строго индивидуально!
 // В моём случае мощности небольшие, поэтому мелкие потребители разделены объединены в конечные 2 потребителя для ТП
@@ -256,6 +258,7 @@ disp("Загрузка ТП-2 в аварийном режиме работы:",
 // ---------------------------------------------------
 //## 2.4 Расчет и выбор линий электроснабжения
 // ---------------------------------------------------
+disp("2.4 ---------------------------------------------------")
 
 TRANSFORMERS_CONSTS=[[S1_TRANSFORMER;U1_TRANSFORMER;TRANSFORMER_COUNT] [S2_TRANSFORMER;U2_TRANSFORMER;TRANSFORMER_COUNT1]]
 //disp(TRANSFORMERS_CONSTS,length(TRANSFORMERS_CONSTS))
@@ -336,6 +339,7 @@ end;
 // ---------------------------------------------------
 //## 2.5 Расчет электрических нагрузок модернизирумоего отдела
 // ---------------------------------------------------
+disp("2.5 ---------------------------------------------------")
 
 Ploadmax=12
 Ploadmin=0.5
@@ -448,6 +452,7 @@ disp("Максимальная нагрузка и максимальный то
 // ---------------------------------------------------
 //## 2.6 Расчёт дизель-генератора для отделения
 // ---------------------------------------------------
+disp("2.6 ---------------------------------------------------")
 
 //АД-40С-Т400-2РКМ7
 U_GENERATOR=0.4
@@ -455,10 +460,12 @@ S_GENERATOR=40
 
 Pgenerator=S_GENERATOR/0.95
 Pgenerator_formula=strcat(["Pдг=" string(S_GENERATOR) "/" string(0.95) "=" string(Pgenerator)])
+disp(Pgenerator_formula)
 
 // ---------------------------------------------------
 //## 2.7 Расчёт освещения модернизируемого отделения
 // ---------------------------------------------------
+disp("2.7 ---------------------------------------------------")
 
 ROOM_LENGTH=13.5
 ROOM_WIDTH=6
@@ -519,6 +526,167 @@ K_LUM2=0.95
 P_lum=K_LUM1*K_LUM2*P_LUM_NOM
 P_lum_formula=strcat(["Pp=" string(K_LUM1) "*" string(K_LUM2) "*" string(P_LUM_NOM) "=" string(P_lum)])
 disp("Расчётная мощность одного светильника, Вт:",P_lum_formula)
+
+// ---------------------------------------------------
+//## 3.1. Расчет токов короткого замыкания
+// ---------------------------------------------------
+disp("3.1 ---------------------------------------------------")
+
+// Базисные мощности и напряжения
+S_BASE=650
+U_BASE=37
+U_BASE1=6
+U_BASE2=0.4
+UC_BASE=10.5
+
+// Сопротивление кабельных линий АПвВ3х50-35
+X_SPECIFIC=0.4
+X_SPECIFIC1=0.46
+I_l=16 // Длина кабельных линий (км)
+
+X_l=X_SPECIFIC*S_BASE*I_l/U_BASE^2
+X_l_formula=strcat(["Xкбл=" string(X_SPECIFIC) "*" string(S_BASE) "*" string(I_l) "/" string(U_BASE) "^2" "=" string(X_l)])
+
+R_l=X_SPECIFIC1*S_BASE*I_l/U_BASE^2
+R_l_formula=strcat(["Rкбл=" string(X_SPECIFIC1) "*" string(S_BASE) "*" string(I_l) "/" string(U_BASE) "^2" "=" string(R_l)])
+disp("Сопротивление кабельных линий АПвВ3х50-35:",X_l_formula,R_l_formula)
+
+// Сопротивление кабельных линий ВВГ3х95
+X_SPECIFIC2=0.39
+X_SPECIFIC3=0.4
+I_l1=0.1 // Длина кабельных линий (км)
+
+X_l1=X_SPECIFIC2*S_BASE*I_l1/U_BASE1^2
+X_l1_formula=strcat(["Xкб=" string(X_SPECIFIC2) "*" string(S_BASE) "*" string(I_l1) "/" string(U_BASE1) "^2" "=" string(X_l1)])
+
+R_l2=X_SPECIFIC3*S_BASE*I_l1/U_BASE1^2
+R_l2_formula=strcat(["Rкб=" string(X_SPECIFIC3) "*" string(S_BASE) "*" string(I_l1) "/" string(U_BASE1) "^2" "=" string(R_l2)])
+disp("Сопротивление кабельных линий ВВГ3х95:",X_l1_formula,R_l2_formula)
+
+// Сопротивление трансформатора ГПП ТМ-630/35/6
+X_SPECIFIC4=0.0254
+
+X_t1=(U_BASE1/100)*(S_BASE/S_BASE)
+X_t1_formula=strcat(["Xт1=" "(" string(U_BASE1) "/" string(100) ")" "*" "(" string(S_BASE) "/" string(S_BASE) ")" "=" string(X_t1)])
+
+R_t1=(X_SPECIFIC4*S_BASE)/U_BASE1^2
+R_t1_formula=strcat(["Rт1=" "(" string(X_SPECIFIC4) "*" string(S_BASE) ")" "/" string(U_BASE1) "^2" "=" string(R_t1)])
+disp("Сопротивление трансформатора ГПП ТМ-630/35/6:",X_t1_formula,R_t1_formula)
+
+// Сопротивление трансформатора самого высоконагруженного ТП ТМГ-160/6/0,4
+X_SPECIFIC5=0.0417
+
+X_t2=(5.5/100)*(S_BASE/S2_TRANSFORMER)
+X_t2_formula=strcat(["Xт1=" "(" string("5.5") "/" string(100) ")" "*" "(" string(S_BASE) "/" string(S2_TRANSFORMER) ")" "=" string(X_t2)])
+
+R_t2=(X_SPECIFIC4*S_BASE)/S2_TRANSFORMER^2
+R_t2_formula=strcat(["Rт1=" "(" string(X_SPECIFIC4) "*" string(S_BASE) ")" "/" string(S2_TRANSFORMER) "^2" "=" string(R_t2)])
+disp("Сопротивление трансформатора ГПП ТМГ-160/6/0,4:",X_t2_formula,R_t2_formula)
+
+// Расчет токов
+Ec=1
+
+I_sc=Ec/(X_SPECIFIC+X_l)
+I_sc_formula=strcat(["Iкз1=" string(Ec) "/" "(" string(X_SPECIFIC) "+" string(X_l) ")" "=" string(I_sc)])
+
+I_b1=S_BASE/(sqrt(3)*U_BASE)
+I_b1_formula=strcat(["Iб1=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE) ")" "=" string(I_b1)])
+
+I_no=I_sc*I_b1
+I_no_formula=strcat(["Ino=" string(I_sc) "*" string(I_b1) "=" string(I_no)])
+
+I_sc1t=I_no*sqrt(2)
+I_sc1t_formula=strcat(["Iкз1т=" string(I_no) "*" "√" string(2) "=" string(I_sc1t)])
+
+// 0.5014 - не знаю откуда взялось значение
+// 0.2016 - не знаю откуда взялось значение
+Ta1=0.5014/(314*0.2016)
+Ta1_formula=strcat(["Tа1=" string(0.5014) "/" "(" string(314) "*" string(0.2016) ")" "=" string(Ta1)])
+
+k_specific=1+2.71828^(-0.01/Ta1)
+
+I_specific1=I_sc1t*k_specific
+I_specific1_formula=strcat(["Iуд1=" string(I_sc1t) "*" string(k_specific) "=" string(I_specific1)])
+disp("КЗ1:",I_sc_formula,I_b1_formula,I_no_formula,I_sc1t_formula,Ta1_formula,I_specific1_formula)
+
+I_sc1=Ec/((X_SPECIFIC/2)+(X_l/2)+X_t1)
+I_sc1_formula=strcat(["Iкз2=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" string(X_t1) "=" string(I_sc1)])
+
+I_b2=S_BASE/(sqrt(3)*U_BASE1)
+I_b2_formula=strcat(["Iб2=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b1)])
+
+I_no1=I_sc1*I_b2
+I_no1_formula=strcat(["Ino2=" string(I_sc1) "*" string(I_b2) "=" string(I_no1)])
+
+I_sc2t=I_no1*sqrt(2)
+I_sc2t_formula=strcat(["Iкз2т=" string(I_no1) "*" "√" string(2) "=" string(I_sc2t)])
+
+// 0.3559 - не знаю откуда взялось значение
+// 0.2568 - не знаю откуда взялось значение
+Ta2=0.3559/(314*0.2568)
+Ta2_formula=strcat(["Tа2=" string(0.3559) "/" "(" string(314) "*" string(0.2568) ")" "=" string(Ta2)])
+
+k_specific=1+2.71828^(-0.01/Ta2)
+
+I_specific2=I_sc2t*k_specific
+I_specific2_formula=strcat(["Iуд2=" string(I_sc2t) "*" string(k_specific) "=" string(I_specific2)])
+disp("КЗ2:",I_sc1_formula,I_b2_formula,I_no1_formula,I_sc2t_formula,Ta2_formula,I_specific2_formula)
+
+I_sc2=Ec/((X_SPECIFIC/2)+(X_l/2)+(X_t1/2)+X_l)
+I_sc2_formula=strcat(["Iкз3=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) ")" "+" string(X_l) "=" string(I_sc2)])
+
+I_b3=S_BASE/(sqrt(3)*U_BASE2)
+I_b3_formula=strcat(["Iб3=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE2) ")" "=" string(I_b3)])
+
+I_no2=I_sc2*I_b3
+I_no2_formula=strcat(["Ino3=" string(I_sc2) "*" string(I_b3) "=" string(I_no2)])
+
+I_sc3t=I_no2*sqrt(2)
+I_sc3t_formula=strcat(["Iкз3т=" string(I_no2) "*" "√" string(2) "=" string(I_sc3t)])
+
+// 0.302 - не знаю откуда взялось значение
+// 0.2613 - не знаю откуда взялось значение
+Ta3=0.302/(314*0.2613)
+Ta3_formula=strcat(["Tа2=" string(0.302) "/" "(" string(314) "*" string(0.2613) ")" "=" string(Ta3)])
+
+k_specific=1+2.71828^(-0.01/Ta3)
+
+I_specific3=I_sc3t*k_specific
+I_specific3_formula=strcat(["Iуд3=" string(I_sc3t) "*" string(k_specific) "=" string(I_specific3)])
+disp("КЗ3:",I_sc2_formula,I_b3_formula,I_no2_formula,I_sc3t_formula,Ta3_formula,I_specific3_formula)
+
+I_sc3=Ec/((X_SPECIFIC/2)+(X_l/2)+(X_t1/2)+X_t1+X_l)
+I_sc3_formula=strcat(["Iкз3=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) ")" "+" string(X_t1) "+" string(X_l) "=" string(I_sc3)])
+
+I_b4=S_BASE/(sqrt(3)*U_BASE2)
+I_b4_formula=strcat(["Iб4=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE2) ")" "=" string(I_b4)])
+
+I_no3=I_sc3*I_b4
+I_no3_formula=strcat(["Ino4=" string(I_sc3) "*" string(I_b4) "=" string(I_no3)])
+
+I_sc4t=I_no3*sqrt(2)
+I_sc4t_formula=strcat(["Iкз4т=" string(I_no3) "*" "√" string(2) "=" string(I_sc4t)])
+
+// 0.6461 - не знаю откуда взялось значение
+// 0.2691 - не знаю откуда взялось значение
+Ta4=0.6461/(314*0.2691)
+Ta4_formula=strcat(["Tа2=" string(0.6461) "/" "(" string(314) "*" string(0.2691) ")" "=" string(Ta4)])
+
+k_specific=1+2.71828^(-0.01/Ta4)
+
+I_specific4=I_sc4t*k_specific
+I_specific4_formula=strcat(["Iуд4=" string(I_sc4t) "*" string(k_specific) "=" string(I_specific4)])
+disp("КЗ4:",I_sc3_formula,I_b4_formula,I_no3_formula,I_sc4t_formula,Ta4_formula,I_specific4_formula)
+
+// ---------------------------------------------------
+//## 3.2. Выбор защитной и коммутационной аппаратуры
+// ---------------------------------------------------
+disp("3.2 ---------------------------------------------------")
+
+
+
+
+
 
 
 
