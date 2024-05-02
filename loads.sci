@@ -41,7 +41,7 @@ while (prog_x<=length(Kс))
     prog_x=prog_x+1;
 end;
 
-format("v", 6)
+format("v", 7)
 
 disp(["№" "tgφ" "Pр" "Qр" "Pро" "Sр" "Sрио"],[nums Tgφ Pр Qр Pро Sр Sрио])
 disp([00 00 PрSum QрSum PроSum SрSum SриоSum])
@@ -126,49 +126,49 @@ disp("Полная итоговая мощность на стороне 35кВ 
 // ---------------------------------------------------
 //## 2.2. Проверка трансформаторов ГПП на перегрузку и кабельных линий 35кВ (ТМ-630/35/6)
 // ---------------------------------------------------
-disp("2.2 ---------------------------------------------------")
+//disp("2.2 ---------------------------------------------------")
 
-S_TRANSFORMER=630
-U_TRANSFORMER=35
+//S_TRANSFORMER=630
+//U_TRANSFORMER=35
 
 // $Kз.норм=Sp/(2*Sт)$
-Kз.норм=Sp2/(2*S_TRANSFORMER)
-Kз.норм_formula=strcat([string(Sp2) "/" "(" string(2) "*" string(S_TRANSFORMER) ")" "=" string(Kз.норм)])
-disp("Загрузка трансформатора в нормальном режиме работы:",Kз.норм_formula)
+//Kз.норм=Sp2/(2*S_TRANSFORMER)
+//Kз.норм_formula=strcat([string(Sp2) "/" "(" string(2) "*" string(S_TRANSFORMER) ")" "=" string(Kз.норм)])
+//disp("Загрузка трансформатора в нормальном режиме работы:",Kз.норм_formula)
 
 // $Kавар=Sp/Sт$
-Kавар=Sp2/S_TRANSFORMER
-Kавар_formula=strcat([string(Sp2) "/" string(S_TRANSFORMER) "=" string(Kавар)])
-disp("Загрузка трансформатора в аварийном режиме работы:",Kавар_formula)
+//Kавар=Sp2/S_TRANSFORMER
+//Kавар_formula=strcat([string(Sp2) "/" string(S_TRANSFORMER) "=" string(Kавар)])
+//disp("Загрузка трансформатора в аварийном режиме работы:",Kавар_formula)
 
-Imax=Sp2/(sqrt(3)*U_TRANSFORMER)
-Imax_formula=strcat([string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Imax)])
-disp("Максимальный ток линии Imax:",Imax_formula)
+//Imax=Sp2/(sqrt(3)*U_TRANSFORMER)
+//Imax_formula=strcat([string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Imax)])
+//disp("Максимальный ток линии Imax:",Imax_formula)
 
-Ipн=Sp2/(2*sqrt(3)*U_TRANSFORMER)
-Ipн_formula=strcat([string(Sp2) "/" "(" string(2) "*" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Ipн)])
-disp("Ipн:",Ipн_formula)
+//Ipн=Sp2/(2*sqrt(3)*U_TRANSFORMER)
+//Ipн_formula=strcat([string(Sp2) "/" "(" string(2) "*" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Ipн)])
+//disp("Ipн:",Ipн_formula)
 
-Iавар=1.4*Sp2/(sqrt(3)*U_TRANSFORMER)
-Iавар_formula=strcat([string(1.4) "*" string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Iавар)])
-disp("Iавар:",Iавар_formula)
+//Iавар=1.4*Sp2/(sqrt(3)*U_TRANSFORMER)
+//Iавар_formula=strcat([string(1.4) "*" string(Sp2) "/" "(" "√" string(3) "*" string(U_TRANSFORMER) ")" "=" string(Iавар)])
+//disp("Iавар:",Iавар_formula)
 
 // Предельная экономическая плотнсть тока А/мм^2
 // 3.1 - кабель с резиновым и пластмассовой изоляцией с медными жилами (4500ч)
 // 1.7 -  кабель с резиновым и пластмассовой изоляцией с алюминевыми жилами
-J_ЭК=1.7
+//J_ЭК=1.7
 J_ЭК1=3.1
 
 //АПвВ 1х50-35
 
-Sэк=Iавар/J_ЭК
-Sэк_formula=strcat([string(Iавар) "/" string(J_ЭК) "=" string(Sэк)])
-disp("Экономическое сечение:",Sэк_formula)
+//Sэк=Iавар/J_ЭК
+//Sэк_formula=strcat([string(Iавар) "/" string(J_ЭК) "=" string(Sэк)])
+//disp("Экономическое сечение:",Sэк_formula)
 
 // ---------------------------------------------------
-//## 2.3 Выбор числа, мощности и типа внутренних ТП 
+//## 2.2 Выбор числа, мощности и типа внутренних ТП 
 // ---------------------------------------------------
-disp("2.3 ---------------------------------------------------")
+disp("2.2 ---------------------------------------------------")
 
 // Объединение потребителей. Строго индивидуально!
 // В моём случае мощности небольшие, поэтому мелкие потребители разделены объединены в конечные 2 потребителя для ТП
@@ -256,9 +256,9 @@ Kcrash1_formula=strcat([string(Sp4) "/" "((" string(TRANSFORMER_COUNT1) "*" stri
 disp("Загрузка ТП-2 в аварийном режиме работы:",Kcrash1_formula)
 
 // ---------------------------------------------------
-//## 2.4 Расчет и выбор линий электроснабжения
+//## 2.3 Расчет и выбор линий электроснабжения
 // ---------------------------------------------------
-disp("2.4 ---------------------------------------------------")
+disp("2.3 ---------------------------------------------------")
 
 TRANSFORMERS_CONSTS=[[S1_TRANSFORMER;U1_TRANSFORMER;TRANSFORMER_COUNT] [S2_TRANSFORMER;U2_TRANSFORMER;TRANSFORMER_COUNT1]]
 //disp(TRANSFORMERS_CONSTS,length(TRANSFORMERS_CONSTS))
@@ -337,9 +337,9 @@ while(transfromer_num<=2)
 end;
 
 // ---------------------------------------------------
-//## 2.5 Расчет электрических нагрузок модернизирумоего отдела
+//## 2.4 Расчет электрических нагрузок модернизирумоего отдела
 // ---------------------------------------------------
-disp("2.5 ---------------------------------------------------")
+disp("2.4 ---------------------------------------------------")
 
 Ploadmax=12
 Ploadmin=0.5
@@ -450,9 +450,9 @@ Im_formula=strcat(["Im=" string(Sm) "/" "(" "√" string(3) "*" string(0.38) ")"
 disp("Максимальная нагрузка и максимальный ток на распределительное устройство:",Pm1_formula,Qm2_formula,Sm_formula,Im_formula)
 
 // ---------------------------------------------------
-//## 2.6 Расчёт дизель-генератора для отделения
+//## 2.5 Расчёт дизель-генератора для отделения
 // ---------------------------------------------------
-disp("2.6 ---------------------------------------------------")
+disp("2.5 ---------------------------------------------------")
 
 //АД-40С-Т400-2РКМ7
 U_GENERATOR=0.4
@@ -463,9 +463,9 @@ Pgenerator_formula=strcat(["Pдг=" string(S_GENERATOR) "/" string(0.95) "=" str
 disp(Pgenerator_formula)
 
 // ---------------------------------------------------
-//## 2.7 Расчёт освещения модернизируемого отделения
+//## 2.6 Расчёт освещения модернизируемого отделения
 // ---------------------------------------------------
-disp("2.7 ---------------------------------------------------")
+disp("2.6 ---------------------------------------------------")
 
 ROOM_LENGTH=13.5
 ROOM_WIDTH=6
@@ -537,7 +537,7 @@ S_BASE=650
 U_BASE=37
 U_BASE1=6
 U_BASE2=0.4
-UC_BASE=10.5
+UC_BASE=37
 
 // Сопротивление кабельных линий АПвВ3х50-35
 X_SPECIFIC=0.4
@@ -613,7 +613,7 @@ I_sc1=Ec/((X_SPECIFIC/2)+(X_l/2)+X_t1)
 I_sc1_formula=strcat(["Iкз2=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" string(X_t1) "=" string(I_sc1)])
 
 I_b2=S_BASE/(sqrt(3)*U_BASE1)
-I_b2_formula=strcat(["Iб2=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b1)])
+I_b2_formula=strcat(["Iб2=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b2)])
 
 I_no1=I_sc1*I_b2
 I_no1_formula=strcat(["Ino2=" string(I_sc1) "*" string(I_b2) "=" string(I_no1)])
