@@ -220,7 +220,6 @@ Sp3=sqrt(Ppsum1^2+Q^2)
 Sp3_formula=strcat(["S`p1=" "√" string(Ppsum1) "^2" "+" string(Q) "^2" "=" string(Sp3)])
 disp("Полная мощность ТП-1",Sp3_formula)
 
-// ТМГ-63/6/0,4
 // ТМГ-400/10/0,4
 S1_TRANSFORMER=400
 U1_TRANSFORMER=10
@@ -235,20 +234,6 @@ disp("Загрузка ТП-1 в нормальном режиме работы:
 Kcrash=Sp3/(S1_TRANSFORMER*(TRANSFORMER_COUNT-1))
 Kcrash_formula=strcat([string(Sp3) "/" "(" string(S1_TRANSFORMER) "*" "(" string(TRANSFORMER_COUNT) "-1" "))" "=" string(Kcrash)])
 disp("Загрузка ТП-1 в аварийном режиме работы:",Kcrash_formula)
-
-// ТМГ-160/6/0,4
-//S2_TRANSFORMER=160
-//U2_TRANSFORMER=6
-//TRANSFORMER_COUNT1=2
-
-//Knormal1=Sp4/(TRANSFORMER_COUNT1*S2_TRANSFORMER)
-//Knormal1_formula=strcat([string(Sp4) "/" "(" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "=" string(Knormal1)])
-//disp("Загрузка ТП-2 в нормальном режиме работы:",Knormal1_formula)
-
-// $Kавар=Sp/Sном*(n-1)$
-//Kcrash1=Sp4/((TRANSFORMER_COUNT1*S2_TRANSFORMER)*(TRANSFORMER_COUNT1-1))
-//Kcrash1_formula=strcat([string(Sp4) "/" "((" string(TRANSFORMER_COUNT1) "*" string(S2_TRANSFORMER) ")" "*" "(" string(TRANSFORMER_COUNT1) "-1" ")" "=" string(Kcrash1)])
-//disp("Загрузка ТП-2 в аварийном режиме работы:",Kcrash1_formula)
 
 // ---------------------------------------------------
 //## 2.3 Расчет и выбор линий электроснабжения 10кВ
@@ -468,7 +453,7 @@ ROOM_HEIGHT=2.5
 ROOM_S=ROOM_LENGTH*ROOM_WIDTH
 
 LAMP_HEIGHT=0.2
-WORK_SURFACE_HEIGHT=0.9
+WORK_SURFACE_HEIGHT=1
 
 h_s=ROOM_HEIGHT-(LAMP_HEIGHT+WORK_SURFACE_HEIGHT)
 h_s_formula=strcat(["h=" string(ROOM_HEIGHT) "-" "(" string(LAMP_HEIGHT) "+" string(WORK_SURFACE_HEIGHT) ")" "=" string(h_s)])
@@ -528,37 +513,38 @@ disp("Расчётная мощность одного светильника, �
 disp("3.1 ---------------------------------------------------")
 
 // Базисные мощности и напряжения
-S_BASE=650
-U_BASE=37
-U_BASE1=6
-U_BASE2=0.4
-UC_BASE=37
+S_BASE=630
+U_BASE=10
+U_BASE1=0.4
+UC_BASE=10.5
 
-// Сопротивление кабельных линий АПвВ3х50-35
-X_SPECIFIC=0.4
-X_SPECIFIC1=0.46
-I_l=16 // Длина кабельных линий (км)
+// ПвП 3х50/16
+// Сопротивление кабельных линий 3х50/16
+X_SPECIFIC=0.2 // Электрическое сопротивление кабеля
+X_SPECIFIC1=0.64
+I_l=0.14 // Длина кабельных линий (км)
 
 X_l=X_SPECIFIC*S_BASE*I_l/U_BASE^2
 X_l_formula=strcat(["Xкбл=" string(X_SPECIFIC) "*" string(S_BASE) "*" string(I_l) "/" string(U_BASE) "^2" "=" string(X_l)])
 
 R_l=X_SPECIFIC1*S_BASE*I_l/U_BASE^2
 R_l_formula=strcat(["Rкбл=" string(X_SPECIFIC1) "*" string(S_BASE) "*" string(I_l) "/" string(U_BASE) "^2" "=" string(R_l)])
-disp("Сопротивление кабельных линий АПвВ3х50-35:",X_l_formula,R_l_formula)
+disp("Сопротивление кабельных линий ПвП 3х50/16:",X_l_formula,R_l_formula)
 
-// Сопротивление кабельных линий ВВГ3х95
-X_SPECIFIC2=0.39
-X_SPECIFIC3=0.4
-I_l1=0.1 // Длина кабельных линий (км)
+// ВВГ 5х70
+// Сопротивление кабельных линий ВВГ 5х70
+X_SPECIFIC2=0.0612 // Электрическое сопротивление кабеля
+X_SPECIFIC3=0.265
+I_l1=0.02 // Длина кабельных линий (км)
 
 X_l1=X_SPECIFIC2*S_BASE*I_l1/U_BASE1^2
 X_l1_formula=strcat(["Xкб=" string(X_SPECIFIC2) "*" string(S_BASE) "*" string(I_l1) "/" string(U_BASE1) "^2" "=" string(X_l1)])
 
 R_l2=X_SPECIFIC3*S_BASE*I_l1/U_BASE1^2
 R_l2_formula=strcat(["Rкб=" string(X_SPECIFIC3) "*" string(S_BASE) "*" string(I_l1) "/" string(U_BASE1) "^2" "=" string(R_l2)])
-disp("Сопротивление кабельных линий ВВГ3х95:",X_l1_formula,R_l2_formula)
+disp("Сопротивление кабельных линий ВВГ 5х70:",X_l1_formula,R_l2_formula)
 
-// Сопротивление трансформатора ГПП ТМ-630/35/6
+// Сопротивление трансформатора ТП-1 ТМГ-400/10/0,4
 X_SPECIFIC4=0.0254
 
 X_t1=(U_BASE1/100)*(S_BASE/S_BASE)
@@ -566,17 +552,17 @@ X_t1_formula=strcat(["Xт1=" "(" string(U_BASE1) "/" string(100) ")" "*" "(" str
 
 R_t1=(X_SPECIFIC4*S_BASE)/U_BASE1^2
 R_t1_formula=strcat(["Rт1=" "(" string(X_SPECIFIC4) "*" string(S_BASE) ")" "/" string(U_BASE1) "^2" "=" string(R_t1)])
-disp("Сопротивление трансформатора ГПП ТМ-630/35/6:",X_t1_formula,R_t1_formula)
+disp("Сопротивление трансформатора ТП-1 ТМГ-400/10/0,4:",X_t1_formula,R_t1_formula)
 
 // Сопротивление трансформатора самого высоконагруженного ТП ТМГ-160/6/0,4
-X_SPECIFIC5=0.0417
-
-X_t2=(5.5/100)*(S_BASE/S2_TRANSFORMER)
-X_t2_formula=strcat(["Xт1=" "(" string("5.5") "/" string(100) ")" "*" "(" string(S_BASE) "/" string(S2_TRANSFORMER) ")" "=" string(X_t2)])
-
-R_t2=(X_SPECIFIC4*S_BASE)/S2_TRANSFORMER^2
-R_t2_formula=strcat(["Rт1=" "(" string(X_SPECIFIC4) "*" string(S_BASE) ")" "/" string(S2_TRANSFORMER) "^2" "=" string(R_t2)])
-disp("Сопротивление трансформатора ГПП ТМГ-160/6/0,4:",X_t2_formula,R_t2_formula)
+//X_SPECIFIC5=0.0417
+//
+//X_t2=(5.5/100)*(S_BASE/S2_TRANSFORMER)
+//X_t2_formula=strcat(["Xт1=" "(" string("5.5") "/" string(100) ")" "*" "(" string(S_BASE) "/" string(S2_TRANSFORMER) ")" "=" string(X_t2)])
+//
+//R_t2=(X_SPECIFIC4*S_BASE)/S2_TRANSFORMER^2
+//R_t2_formula=strcat(["Rт1=" "(" string(X_SPECIFIC4) "*" string(S_BASE) ")" "/" string(S2_TRANSFORMER) "^2" "=" string(R_t2)])
+//disp("Сопротивление трансформатора ГПП ТМГ-160/6/0,4:",X_t2_formula,R_t2_formula)
 
 // Расчет токов
 Ec=1
