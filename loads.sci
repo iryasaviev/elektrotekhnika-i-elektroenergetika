@@ -565,8 +565,9 @@ disp("Сопротивление трансформатора ТП-1 ТМГ-400/
 //disp("Сопротивление трансформатора ГПП ТМГ-160/6/0,4:",X_t2_formula,R_t2_formula)
 
 // Расчет токов
-Ec=1
+Ec=1.05
 
+// КЗ-1
 I_sc=Ec/(X_SPECIFIC+X_l)
 I_sc_formula=strcat(["Iкз1=" string(Ec) "/" "(" string(X_SPECIFIC) "+" string(X_l) ")" "=" string(I_sc)])
 
@@ -590,11 +591,15 @@ I_specific1=I_sc1t*k_specific
 I_specific1_formula=strcat(["Iуд1=" string(I_sc1t) "*" string(k_specific) "=" string(I_specific1)])
 disp("КЗ1:",I_sc_formula,I_b1_formula,I_no_formula,I_sc1t_formula,Ta1_formula,I_specific1_formula)
 
-I_sc1=Ec/((X_SPECIFIC/2)+(X_l/2)+X_t1)
-I_sc1_formula=strcat(["Iкз2=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" string(X_t1) "=" string(I_sc1)])
+//I_sc1=Ec/((X_SPECIFIC/2)+(X_l/2)+X_t1)
+//I_sc1_formula=strcat(["Iкз2=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" string(X_t1) "=" string(I_sc1)])
 
-I_b2=S_BASE/(sqrt(3)*U_BASE1)
-I_b2_formula=strcat(["Iб2=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b2)])
+// КЗ-2
+I_sc1=Ec/(X_SPECIFIC+X_l+X_l1)
+I_sc1_formula=strcat(["Iкз2=" string(Ec) "/" "(" string(X_SPECIFIC) "+" string(X_l) "+" string(X_l1) ")" "=" string(I_sc1)])
+
+I_b2=S_BASE/(sqrt(3)*U_BASE)
+I_b2_formula=strcat(["Iб2=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE) ")" "=" string(I_b2)])
 
 I_no1=I_sc1*I_b2
 I_no1_formula=strcat(["Ino2=" string(I_sc1) "*" string(I_b2) "=" string(I_no1)])
@@ -613,11 +618,12 @@ I_specific2=I_sc2t*k_specific
 I_specific2_formula=strcat(["Iуд2=" string(I_sc2t) "*" string(k_specific) "=" string(I_specific2)])
 disp("КЗ2:",I_sc1_formula,I_b2_formula,I_no1_formula,I_sc2t_formula,Ta2_formula,I_specific2_formula)
 
-I_sc2=Ec/((X_SPECIFIC/2)+(X_l/2)+(X_t1/2)+X_l)
-I_sc2_formula=strcat(["Iкз3=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) ")" "+" string(X_l) "=" string(I_sc2)])
+// КЗ-3
+I_sc2=Ec/(X_SPECIFIC+X_l+(X_l1/2)+(X_t1/2))
+I_sc2_formula=strcat(["Iкз3=" string(Ec) "/" "(" string(X_SPECIFIC) "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) "))" "=" string(I_sc2)])
 
-I_b3=S_BASE/(sqrt(3)*U_BASE2)
-I_b3_formula=strcat(["Iб3=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE2) ")" "=" string(I_b3)])
+I_b3=S_BASE/(sqrt(3)*U_BASE1)
+I_b3_formula=strcat(["Iб3=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b3)])
 
 I_no2=I_sc2*I_b3
 I_no2_formula=strcat(["Ino3=" string(I_sc2) "*" string(I_b3) "=" string(I_no2)])
@@ -636,33 +642,47 @@ I_specific3=I_sc3t*k_specific
 I_specific3_formula=strcat(["Iуд3=" string(I_sc3t) "*" string(k_specific) "=" string(I_specific3)])
 disp("КЗ3:",I_sc2_formula,I_b3_formula,I_no2_formula,I_sc3t_formula,Ta3_formula,I_specific3_formula)
 
-I_sc3=Ec/((X_SPECIFIC/2)+(X_l/2)+(X_t1/2)+X_t1+X_l)
-I_sc3_formula=strcat(["Iкз3=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) ")" "+" string(X_t1) "+" string(X_l) "=" string(I_sc3)])
+// КЗ-4
+//I_sc3=Ec/((X_SPECIFIC/2)+(X_l/2)+(X_t1/2)+X_t1+X_l)
+//I_sc3_formula=strcat(["Iкз3=" string(Ec) "/" "((" string(X_SPECIFIC) "/" string(2) ")" "+" "(" string(X_l) "/" string(2) ")" "+" "(" string(X_t1) "/" string(2) ")" "+" string(X_t1) "+" string(X_l) "=" string(I_sc3)])
 
-I_b4=S_BASE/(sqrt(3)*U_BASE2)
-I_b4_formula=strcat(["Iб4=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE2) ")" "=" string(I_b4)])
+//I_b4=S_BASE/(sqrt(3)*U_BASE1)
+//I_b4_formula=strcat(["Iб4=" string(S_BASE) "/" "(" "√" string(3) "*" string(U_BASE1) ")" "=" string(I_b4)])
 
-I_no3=I_sc3*I_b4
-I_no3_formula=strcat(["Ino4=" string(I_sc3) "*" string(I_b4) "=" string(I_no3)])
+//I_no3=I_sc3*I_b4
+//I_no3_formula=strcat(["Ino4=" string(I_sc3) "*" string(I_b4) "=" string(I_no3)])
 
-I_sc4t=I_no3*sqrt(2)
-I_sc4t_formula=strcat(["Iкз4т=" string(I_no3) "*" "√" string(2) "=" string(I_sc4t)])
+//I_sc4t=I_no3*sqrt(2)
+//I_sc4t_formula=strcat(["Iкз4т=" string(I_no3) "*" "√" string(2) "=" string(I_sc4t)])
 
 // 0.6461 - не знаю откуда взялось значение
 // 0.2691 - не знаю откуда взялось значение
-Ta4=0.6461/(314*0.2691)
-Ta4_formula=strcat(["Tа2=" string(0.6461) "/" "(" string(314) "*" string(0.2691) ")" "=" string(Ta4)])
+//Ta4=0.6461/(314*0.2691)
+//Ta4_formula=strcat(["Tа2=" string(0.6461) "/" "(" string(314) "*" string(0.2691) ")" "=" string(Ta4)])
 
-k_specific=1+2.71828^(-0.01/Ta4)
+//k_specific=1+2.71828^(-0.01/Ta4)
 
-I_specific4=I_sc4t*k_specific
-I_specific4_formula=strcat(["Iуд4=" string(I_sc4t) "*" string(k_specific) "=" string(I_specific4)])
-disp("КЗ4:",I_sc3_formula,I_b4_formula,I_no3_formula,I_sc4t_formula,Ta4_formula,I_specific4_formula)
+//I_specific4=I_sc4t*k_specific
+//I_specific4_formula=strcat(["Iуд4=" string(I_sc4t) "*" string(k_specific) "=" string(I_specific4)])
+//disp("КЗ4:",I_sc3_formula,I_b4_formula,I_no3_formula,I_sc4t_formula,Ta4_formula,I_specific4_formula)
 
 // ---------------------------------------------------
 //## 3.2. Выбор защитной и коммутационной аппаратуры
 // ---------------------------------------------------
 disp("3.2 ---------------------------------------------------")
+
+// Выбор разъединителя 10кВ
+U_BASE_DISCONNNECTOR=10
+I_BASE_DISCONNNECTOR=400
+I_BASE_TEMP=16
+T_BASE=3
+
+// Термическая стойкость
+thermal_resistance=I_BASE_TEMP^2*T_BASE
+thermal_resistance_formula=strcat(["Вк=" string(I_BASE_TEMP) "^2" "*" string(T_BASE) "=" string(thermal_resistance)])
+disp("Термическая стойкость:", thermal_resistance_formula)
+
+// Выбор предохранителя 10кВ (предохранитель с кварцевым наполнителем серии ПК)
 
 
 
